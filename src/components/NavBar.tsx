@@ -1,9 +1,10 @@
-import { AppBar, styled, Toolbar, Typography } from "@mui/material"
+import { AppBar, Toolbar, Typography } from "@mui/material"
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import InputBase from '@mui/material/InputBase';
 import { useGetAllPostQuery } from "../app/service/demmyData";
 import { ChangeEvent, useState } from "react";
 import { useDebounce } from "../hook";
+import { styled, Theme } from '@mui/material/styles';
 
 
 interface PostData {
@@ -18,13 +19,23 @@ const StyleToolbar = styled(Toolbar)({
 
 });
 
-const StyleSearchBar = styled('div')(({ theme }) => ({
+
+const StyleSearchBar = styled('div')(({ theme }: { theme: Theme }) => ({
     backgroundColor: 'white',
     padding: '0 10px',
     borderRadius: theme.shape.borderRadius,
-    width: '40%',
-    position: "relative"
+    position: 'relative',
+    width: '100%', // Default width
+
+    [theme.breakpoints.up('xs')]: {
+        width: '80%', // Extra small screens
+    },
+    [theme.breakpoints.up('sm')]: {
+        width: '50%', // Small screens
+    },
+
 }));
+
 
 const SearchShow = styled('div')(({ theme }) => ({
     backgroundColor: 'white',
@@ -45,6 +56,8 @@ const StyleProfile = styled('div')(({ theme }) => ({
     backgroundColor: 'white',
     padding: '0 10px',
     borderRadius: theme.shape.borderRadius,
+    color: "blue",
+    textTransform: "uppercase",
 
 }));
 
@@ -72,21 +85,6 @@ const NavBar = () => {
 
     }
 
-    // const debounce = (fn: (e: ChangeEvent<HTMLInputElement>) => void, delay: number) => {
-    //     let timeoutID: number;
-    //     return (...args: [e: ChangeEvent<HTMLInputElement>]) => {
-    //         const context = this;
-    //         if (timeoutID) {
-    //             clearTimeout(timeoutID);
-    //             timeoutID = setTimeout(() => {
-    //                 fn.apply(context, args);
-    //             }, delay)
-    //         }
-    //     }
-    // }
-
-    // const handleChange = debounce(handleSearch, 300)
-
     return (
         <AppBar position="sticky">
             <Toolbar>
@@ -95,7 +93,7 @@ const NavBar = () => {
                         HASNAIN
                     </Typography>
                     <NoteAltIcon sx={{ display: { xs: "block", sm: "none" } }} />
-                    <StyleSearchBar><InputBase onChange={handleSearch} placeholder="Search..." />
+                    <StyleSearchBar sx={{ display: { width: { xs: "100%", sm: "60%" } } }}><InputBase onChange={handleSearch} placeholder="Search..." />
 
                         {isLoading && <SearchShow>Loading.....</SearchShow>}
                         {
@@ -114,8 +112,8 @@ const NavBar = () => {
                             )
                         }
 
-                    </StyleSearchBar>
-                    <StyleProfile>search</StyleProfile>
+                    </StyleSearchBar >
+                    <StyleProfile sx={{ display: { xs: "none", sm: "block" } }}>Profile</StyleProfile>
                 </StyleToolbar>
             </Toolbar>
 
